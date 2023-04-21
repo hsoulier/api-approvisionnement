@@ -59,7 +59,7 @@ app.post("/api/supply", async (req, res) => {
         product.purchasePricePerUnit * product.quantity
 
       const productId = res.data.filter((p) => p.ean === product.ean)[0].id
-      await axios.post(`/api/stock/${productId}/movement`, {
+      await axios.post(`https://microservice-stock.vercel.app/api/stock/${productId}/movement`, {
         productId: productId,
         quantity: product.quantity,
         status: "Supply",
