@@ -53,16 +53,16 @@ app.post("/api/supply", async (req, res) => {
             price: product.purchasePricePerUnit,
           }
         )
-        supplySummary.totalNbProducts += product.quantity
-        supplySummary.totalPurchasePrice +=
-          product.purchasePricePerUnit * product.quantity
-
-        await axios.post(`/api/stock/${product.ean}/movement`, {
-          productId: product.ean,
-          quantity: product.quantity,
-          status: "Supply",
-        })
       }
+      supplySummary.totalNbProducts += product.quantity
+      supplySummary.totalPurchasePrice +=
+        product.purchasePricePerUnit * product.quantity
+
+      await axios.post(`/api/stock/${product.ean}/movement`, {
+        productId: product.ean,
+        quantity: product.quantity,
+        status: "Supply",
+      })
     }
     supplySummary.nbSupply += 1
     res.status(204).end()
