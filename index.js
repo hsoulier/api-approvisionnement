@@ -85,7 +85,7 @@ app.post("/api/supply-needed", async (req, res) => {
       throw new Error("Missing productId")
     }
     const res = await axios.get(
-      `http://microservices.tp.rjqu8633.odns.fr/api/product/${productId}`
+      `http://microservices.tp.rjqu8633.odns.fr/api/products/${productId}`
     )
     await axios.post(
       "http://microservices.tp.rjqu8633.odns.fr/api/supply-request",
