@@ -5,6 +5,10 @@ const express = require("express")
 // Initialize Express
 const app = express()
 
+// Add body-parser
+const bodyParser = require("body-parser")
+app.use(bodyParser.json())
+
 const supplySummary = {
   nbSupply: 0,
   totalNbProducts: 0,
