@@ -58,8 +58,9 @@ app.post("/api/supply", async (req, res) => {
       supplySummary.totalPurchasePrice +=
         product.purchasePricePerUnit * product.quantity
 
-      await axios.post(`/api/stock/${product.ean}/movement`, {
-        productId: product.ean,
+      const productId = res.data.filter((p) => p.ean === product.ean)[0].id
+      await axios.post(`/api/stock/${productId}/movement`, {
+        productId: productId,
         quantity: product.quantity,
         status: "Supply",
       })
