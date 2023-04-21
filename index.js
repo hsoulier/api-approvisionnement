@@ -5,6 +5,8 @@ const express = require("express")
 // Initialize Express
 const app = express()
 
+const productList = new Map()
+
 // Create GET request
 app.get("/api/ping", (req, res) => {
   res.send("PONG")
@@ -29,6 +31,18 @@ app.post("/api/supply", async (req, res) => {
       ) {
         throw new Error("Missing product data")
       }
+      if (productList.has(product.ean)) {
+        productList.set(product.ean, {
+          ...productList.get(product.ean),
+          quantity: productList.get(product.ean).quantity + product.quantity,
+        })
+      } else {
+        productList.set(product.ean, {
+          ...productList.get(product.ean),
+          price: product.purchasePricePerUnit,
+          categories: [],
+        })
+      }
       await axios.post(`/api/stock/${product.ean}/movement`, {
         productId: product.ean,
         quantity: product.quantity,
@@ -37,6 +51,14 @@ app.post("/api/supply", async (req, res) => {
     }
 
     res.status(204).end()
+  } catch (error) {
+    res.status(400).send(error.message)
+  }
+})
+
+app.get("/api/supply/summary", async (req, res) => {
+  try {
+    res.status(200).end()
   } catch (error) {
     res.status(400).send(error.message)
   }
