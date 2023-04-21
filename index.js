@@ -5,8 +5,11 @@ const express = require("express");
 // Initialize Express
 const app = express();
 
-const productList = new Map();
-
+const supplySummary = {
+  nbSupply: 0, 
+  totalNbProducts: 0,
+  totalPurchasePrice: 0
+}
 // Create GET request
 app.get("/api/ping", (req, res) => {
   res.send("PONG");
@@ -46,6 +49,8 @@ app.post("/api/supply", async (req, res) => {
             price: product.purchasePricePerUnit,
           }
         );
+        supplySummary.totalNbProducts += product.quantity;
+        supplySummary.totalPurchasePrice += product.purchasePricePerUnit * product.quantity;
 
         await axios.post(`/api/stock/${product.ean}/movement`, {
           productId: product.ean,
@@ -54,17 +59,18 @@ app.post("/api/supply", async (req, res) => {
         });
       }
     }
+    supplySummary.nbSupply += 1;
     res.status(204).end();
   } catch (error) {
     res.status(400).send(error.message);
   }
-});
-
-app.get("/api/supply/summary", async (req, res) => {
+})
+app.get('/api/supply/summary', async (req, res) => {
   try {
-    res.status(200).end();
+    res.status(200).json(supplySummary);
   } catch (error) {
-    res.status(400).send(error.message);
+    console.error(error);
+    res.status(500).send('Internal server error');
   }
 });
 
